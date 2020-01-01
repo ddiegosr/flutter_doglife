@@ -1,3 +1,4 @@
+import 'package:doglife/pages/reset-password.page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -60,7 +61,14 @@ class LoginPage extends StatelessWidget {
                 child: Text(
                   'Recuperar Senha',
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ResetPasswordPage(),
+                    ),
+                  );
+                },
               ),
             ),
             SizedBox(
