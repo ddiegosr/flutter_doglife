@@ -1,6 +1,21 @@
+import 'package:doglife/pages/controller.dart';
+import 'package:doglife/pages/post.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  final Controller controller = Controller();
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void dispose() {
+    widget.controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,21 +52,41 @@ class HomePage extends StatelessWidget {
       ),
       body: Container(
         color: Color(0xFFF2F3F6),
-        child: ListView(
-          children: <Widget>[
-            cardItem(),
-            cardItem(),
-            cardItem(),
-            cardItem(),
-            cardItem(),
-          ],
+        child: StreamBuilder(
+          stream: widget.controller.output,
+          builder: (BuildContext context, AsyncSnapshot<List<Post>> snapshot) {
+            if (!snapshot.hasData) {
+              return Column(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.all(30),
+                    child: Text(
+                      'Nenhum dado a ser mostrado, clique abaixo para popular a lista.',
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  RaisedButton(
+                    child: Text('Popular'),
+                    color: Color(0xFFF58624),
+                    textColor: Colors.white,
+                    onPressed: widget.controller.populate,
+                  ),
+                ],
+              );
+            }
+            return ListView(
+              children: snapshot.data
+                  .map((item) => cardItem(item, widget.controller.like))
+                  .toList(),
+            );
+          },
         ),
       ),
     );
   }
 }
 
-Widget cardItem() {
+Widget cardItem(Post post, Function onLike) {
   return Card(
     child: Column(
       mainAxisSize: MainAxisSize.min,
@@ -73,16 +108,17 @@ Widget cardItem() {
         ),
         Container(
           padding: EdgeInsets.all(10),
-          child: Text(
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis elementum eget ante et aliquam. Maecenas volutpat ipsum sit amet nisi condimentum pulvinar.',
-          ),
+          child: Text(post.text),
         ),
         ButtonTheme.bar(
           child: ButtonBar(
             children: <Widget>[
               FlatButton(
-                child: Icon(Icons.favorite),
-                onPressed: () {},
+                child:
+                    Icon(post.liked ? Icons.favorite : Icons.favorite_border),
+                onPressed: () {
+                  onLike(post.id);
+                },
               ),
               FlatButton(
                 child: Icon(Icons.share),
