@@ -110,22 +110,19 @@ Widget cardItem(Post post, Function onLike) {
           padding: EdgeInsets.all(10),
           child: Text(post.text),
         ),
-        ButtonTheme.bar(
-          child: ButtonBar(
-            children: <Widget>[
-              FlatButton(
-                child:
-                    Icon(post.liked ? Icons.favorite : Icons.favorite_border),
-                onPressed: () {
-                  onLike(post.id);
-                },
-              ),
-              FlatButton(
-                child: Icon(Icons.share),
-                onPressed: () {},
-              ),
-            ],
-          ),
+        ButtonBar(
+          children: <Widget>[
+            FlatButton(
+              child: Icon(post.liked ? Icons.favorite : Icons.favorite_border),
+              onPressed: () {
+                onLike(post.id);
+              },
+            ),
+            FlatButton(
+              child: Icon(Icons.share),
+              onPressed: () {},
+            ),
+          ],
         ),
       ],
     ),
